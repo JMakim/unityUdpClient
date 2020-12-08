@@ -31,7 +31,7 @@ public class NetworkMan : MonoBehaviour
 
         InvokeRepeating("HeartBeat", 1, 1);
 
-        //InvokeRepeating("UpdatePlayers", 50, 50);
+        InvokeRepeating("UpdatePlayers",5.0f,5.0f);
     }
 
     void OnDestroy(){
@@ -60,9 +60,7 @@ public class NetworkMan : MonoBehaviour
         public string id;
         public receivedColor color;
 
-        public float posx;
-        public float posz;
-        public float roty;
+        public Vector3 position;
 
     }
 
@@ -149,31 +147,18 @@ public class NetworkMan : MonoBehaviour
     public string pos; 
 
     void UpdatePlayers(){
-        Player playera = new Player();
-        x = player.transform.position.x;
-        z = player.transform.position.z;
-        y = player.transform.rotation.y;
+        //Player playera = new Player();
+        //x = player.transform.position.x;
+        //z = player.transform.position.z;
+        //y = player.transform.rotation.y;
 
-       
-        playera.posx = x;
-        playera.posz = z;
-        playera.roty = y;
-        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
-
-         string jsonString = JsonUtility.ToJson(playera);
-        Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
-        udp.Send(sendBytes, sendBytes.Length);
+        //pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
 
         foreach (var i in lastestGameState.players)
         {
             Color color = new Color(i.color.R, i.color.G, i.color.B);
             player.GetComponent<Renderer>().material.SetColor("_Color", color);
-            i.posx = x;
-            i.posz = z;
-            i.roty = y;
         }
-
-
     }
 
     void DestroyPlayers(){
@@ -186,17 +171,17 @@ public class NetworkMan : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
-    public void SendPosition(float posx, float posz, float roty)
-    {
-        playerPos info = new playerPos();
-        info.x = posx;
-        info.z = posz;
-        info.y = roty;
-        string jsonString = JsonUtility.ToJson(info);
-
-        Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
-        udp.Send(sendBytes, sendBytes.Length);
-    }
+    //public void SendPosition(float posx, float posz, float roty)
+    //{
+    //    playerPos info = new playerPos();
+    //    info.x = posx;
+    //    info.z = posz;
+    //    info.y = roty;
+    //    string jsonString = JsonUtility.ToJson(info);
+    //    Debug.Log(jsonString);
+    //    Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
+    //    udp.Send(sendBytes, sendBytes.Length);
+    //}
 
 
 
@@ -209,6 +194,7 @@ public class NetworkMan : MonoBehaviour
                 SpawnPlayers();
             }
             UpdatePlayers();
+
         }
         else if (connected == false)
         {
