@@ -161,6 +161,9 @@ public class NetworkMan : MonoBehaviour
             i.position.x = x;
             i.position.z = z;
 
+            string sendPos = JsonUtility.ToJson(i);
+            Byte[] sendBytes = Encoding.ASCII.GetBytes(sendPos);
+            udp.Send(sendBytes, sendBytes.Length);
         }
     }
 
@@ -174,20 +177,7 @@ public class NetworkMan : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
-    //public void SendPosition(float posx, float posz, float roty)
-    //{
-    //    playerPos info = new playerPos();
-    //    info.x = posx;
-    //    info.z = posz;
-    //    info.y = roty;
-    //    string jsonString = JsonUtility.ToJson(info);
-    //    Debug.Log(jsonString);
-    //    Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
-    //    udp.Send(sendBytes, sendBytes.Length);
-    //}
-
-
-
+   
     void Update(){
 
         if (connected == true)
