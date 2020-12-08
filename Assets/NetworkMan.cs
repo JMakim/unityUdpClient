@@ -78,9 +78,7 @@ public class NetworkMan : MonoBehaviour
     [Serializable]
     public class playerPos
     {
-        public float x;
-        public float y;
-        public float z;
+        public Vector3 position;
     }
 
   
@@ -147,17 +145,22 @@ public class NetworkMan : MonoBehaviour
     public string pos; 
 
     void UpdatePlayers(){
-        //Player playera = new Player();
-        //x = player.transform.position.x;
-        //z = player.transform.position.z;
-        //y = player.transform.rotation.y;
+        x = player.transform.position.x;
+        z = player.transform.position.z;
+        y = player.transform.rotation.y;
 
-        //pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
+        
+
+        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
 
         foreach (var i in lastestGameState.players)
         {
             Color color = new Color(i.color.R, i.color.G, i.color.B);
             player.GetComponent<Renderer>().material.SetColor("_Color", color);
+            Vector3 position = new Vector3(i.position.x, i.position.y, i.position.z);
+            i.position.x = x;
+            i.position.z = z;
+
         }
     }
 
