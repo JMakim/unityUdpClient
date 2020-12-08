@@ -31,7 +31,9 @@ public class NetworkMan : MonoBehaviour
 
         InvokeRepeating("HeartBeat", 1, 1);
 
-        InvokeRepeating("UpdatePlayers",5.0f,5.0f);
+       // InvokeRepeating("Pos",1,0.3f); //send 3 per sec
+        InvokeRepeating("Pos",1,0.1f); //send 10 per sec
+       // InvokeRepeating("Pos",1,0.03f); //send 30 per sec
     }
 
     void OnDestroy(){
@@ -145,25 +147,12 @@ public class NetworkMan : MonoBehaviour
     public string pos; 
 
     void UpdatePlayers(){
-        x = player.transform.position.x;
-        z = player.transform.position.z;
-        y = player.transform.rotation.y;
-
-        
-
-        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
+       
 
         foreach (var i in lastestGameState.players)
         {
             Color color = new Color(i.color.R, i.color.G, i.color.B);
             player.GetComponent<Renderer>().material.SetColor("_Color", color);
-            Vector3 position = new Vector3(i.position.x, i.position.y, i.position.z);
-            i.position.x = x;
-            i.position.z = z;
-
-            string sendPos = JsonUtility.ToJson(i);
-            Byte[] sendBytes = Encoding.ASCII.GetBytes(sendPos);
-            udp.Send(sendBytes, sendBytes.Length);
         }
     }
 
@@ -174,6 +163,25 @@ public class NetworkMan : MonoBehaviour
     
     void HeartBeat(){
         Byte[] sendBytes = Encoding.ASCII.GetBytes("heartbeat");
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    void Pos()
+    {
+        x = player.transform.position.x;
+        z = player.transform.position.z;
+        y = player.transform.rotation.y;
+
+        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
+
+        foreach (var i in lastestGameState.players)
+        {
+            Vector3 position = new Vector3(i.position.x, i.position.y, i.position.z);
+            i.position.x = x;
+            i.position.z = z;
+        }
+        string test = "test";
+        Byte[] sendBytes = Encoding.ASCII.GetBytes("sendPos");
         udp.Send(sendBytes, sendBytes.Length);
     }
 
