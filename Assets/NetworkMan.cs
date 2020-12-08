@@ -5,6 +5,7 @@ using System;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
+using Unity.Networking.Transport;
 
 
 
@@ -31,9 +32,10 @@ public class NetworkMan : MonoBehaviour
 
         InvokeRepeating("HeartBeat", 1, 1);
 
-       // InvokeRepeating("Pos",1,0.3f); //send 3 per sec
-        InvokeRepeating("Pos",1,0.1f); //send 10 per sec
-       // InvokeRepeating("Pos",1,0.03f); //send 30 per sec
+        InvokeRepeating("Pos", 1, 1f);
+        // InvokeRepeating("Pos",1,0.3f); //send 3 per sec
+        // InvokeRepeating("Pos",1,0.1f); //send 10 per sec
+        // InvokeRepeating("Pos",1,0.03f); //send 30 per sec
     }
 
     void OnDestroy(){
@@ -54,15 +56,20 @@ public class NetworkMan : MonoBehaviour
     [Serializable]
     public class Player{
         [Serializable]
-        public struct receivedColor{
-            public float R;
-            public float G;
-            public float B;
+        //public struct receivedColor{
+        //    public float R;
+        //    public float G;
+        //    public float B;
+        //}
+        public struct receivedPos
+        {
+            public float X;
+            public float Z;
         }
         public string id;
-        public receivedColor color;
-
-        public Vector3 position;
+        //public receivedColor color;
+        public receivedPos position;
+        //public Vector3 position;
 
     }
 
@@ -149,11 +156,23 @@ public class NetworkMan : MonoBehaviour
     void UpdatePlayers(){
        
 
+        //foreach (var i in lastestGameState.players)
+        //{
+        //    Color color = new Color(i.color.R, i.color.G, i.color.B);
+        //    player.GetComponent<Renderer>().material.SetColor("_Color", color);
+        //}
+
         foreach (var i in lastestGameState.players)
         {
-            Color color = new Color(i.color.R, i.color.G, i.color.B);
-            player.GetComponent<Renderer>().material.SetColor("_Color", color);
+
+            player.transform.position = new Vector3(i.position.X, 0, i.position.Z);
         }
+
+        x = player.transform.position.x;
+        z = player.transform.position.z;
+        y = player.transform.rotation.y;
+
+        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
     }
 
     void DestroyPlayers(){
@@ -166,24 +185,7 @@ public class NetworkMan : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
-    void Pos()
-    {
-        x = player.transform.position.x;
-        z = player.transform.position.z;
-        y = player.transform.rotation.y;
-
-        pos = "X Pos: " + x.ToString() + " Z Pos: " + z.ToString() + " Y Rot: " + y.ToString();
-
-        foreach (var i in lastestGameState.players)
-        {
-            Vector3 position = new Vector3(i.position.x, i.position.y, i.position.z);
-            i.position.x = x;
-            i.position.z = z;
-        }
-        string test = "test";
-        Byte[] sendBytes = Encoding.ASCII.GetBytes("sendPos");
-        udp.Send(sendBytes, sendBytes.Length);
-    }
+   
 
    
     void Update(){
