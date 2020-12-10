@@ -188,11 +188,11 @@ public class NetworkMan : MonoBehaviour
 
     public void SendPosition(float x, float z, float y)
     {
-        PlayerPos info = new PlayerPos();
-        info.x = x;
-        info.y = y;
-        info.z = z;
-        string jsonString = JsonUtility.ToJson(info);
+        PlayerPos pos = new PlayerPos();
+        pos.x = x;
+        pos.y = y;
+        pos.z = z;
+        string jsonString = JsonUtility.ToJson(pos);
         Debug.Log(jsonString);
         Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
         udp.Send(sendBytes, sendBytes.Length);
