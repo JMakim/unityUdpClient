@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 1396906439}
   m_Layer: 0
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Network
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,6 +156,10 @@ MonoBehaviour:
     cmd: 0
   lastestGameState:
     players: []
+  x: 0
+  z: 0
+  y: 0
+  pos: 
 --- !u!4 &1396906440
 Transform:
   m_ObjectHideFlags: 0

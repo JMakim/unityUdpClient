@@ -31,11 +31,10 @@ public class NetworkMan : MonoBehaviour
         udp.BeginReceive(new AsyncCallback(OnReceived), udp);
 
         InvokeRepeating("HeartBeat", 1, 1);
+        
 
-        InvokeRepeating("Pos", 1, 1f);
-        // InvokeRepeating("Pos",1,0.3f); //send 3 per sec
-        // InvokeRepeating("Pos",1,0.1f); //send 10 per sec
-        // InvokeRepeating("Pos",1,0.03f); //send 30 per sec
+
+       
     }
 
     void OnDestroy(){
@@ -56,21 +55,28 @@ public class NetworkMan : MonoBehaviour
     [Serializable]
     public class Player{
         [Serializable]
-        //public struct receivedColor{
-        //    public float R;
-        //    public float G;
-        //    public float B;
-        //}
-        public struct receivedPos
+        public struct receivedColor
         {
-            public float X;
-            public float Z;
+            public float R;
+            public float G;
+            public float B;
         }
+
         public string id;
         //public receivedColor color;
-        public receivedPos position;
-        //public Vector3 position;
 
+        public float x;
+        public float z;
+        public float y;
+
+    }
+
+    [Serializable]
+    class PlayerPos
+    {
+        public float x;
+        public float z;
+        public float y;
     }
 
     [Serializable]
@@ -84,18 +90,12 @@ public class NetworkMan : MonoBehaviour
 
     }
 
-    [Serializable]
-    public class playerPos
-    {
-        public Vector3 position;
-    }
-
-  
+   
     //public void testmsg(string txt)
     //{
     //    string text = "hello";
     //}
-    
+
     public Message latestMessage;
     public GameState lastestGameState;
     void OnReceived(IAsyncResult result){
@@ -162,12 +162,6 @@ public class NetworkMan : MonoBehaviour
         //    player.GetComponent<Renderer>().material.SetColor("_Color", color);
         //}
 
-        foreach (var i in lastestGameState.players)
-        {
-
-            player.transform.position = new Vector3(i.position.X, 0, i.position.Z);
-        }
-
         x = player.transform.position.x;
         z = player.transform.position.z;
         y = player.transform.rotation.y;
@@ -185,9 +179,25 @@ public class NetworkMan : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
-   
+    //void testMessage()
+    //{
+    //    string test = "hello";
+    //    Byte[] sendBytes = Encoding.ASCII.GetBytes(test);
+    //    udp.Send(sendBytes, sendBytes.Length);
+    //}
 
-   
+    public void SendPosition(float x, float z, float y)
+    {
+        PlayerPos info = new PlayerPos();
+        info.x = x;
+        info.y = y;
+        info.z = z;
+        string jsonString = JsonUtility.ToJson(info);
+        Debug.Log(jsonString);
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(jsonString);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
     void Update(){
 
         if (connected == true)
