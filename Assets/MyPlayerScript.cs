@@ -7,10 +7,9 @@ public class MyPlayerScript : MonoBehaviour
     public float speed = 100;
     public float rotSpeed = 50;
 
-
-
     public NetworkMan NM;
 
+    public GameObject player;
 
     public float x;
     public float z;
@@ -19,10 +18,12 @@ public class MyPlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.FindWithTag("Network");
         InvokeRepeating("Pos", 1, 1f);
         // InvokeRepeating("Pos",1,0.3f); //send 3 per sec
         // InvokeRepeating("Pos",1,0.1f); //send 10 per sec
         // InvokeRepeating("Pos",1,0.03f); //send 30 per sec
+        NM = player.GetComponent<NetworkMan>();
     }
 
 
@@ -32,6 +33,7 @@ public class MyPlayerScript : MonoBehaviour
     {
         movement();
 
+       
         
     }
 
@@ -70,6 +72,5 @@ public class MyPlayerScript : MonoBehaviour
     void Pos()
     {
         NM.SendPosition(x, y, z);
-
     }
 }
